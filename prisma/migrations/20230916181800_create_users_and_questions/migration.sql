@@ -17,7 +17,6 @@ CREATE TABLE "questions" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
     "author_id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
 
     CONSTRAINT "questions_pkey" PRIMARY KEY ("id")
 );
