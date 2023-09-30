@@ -37,7 +37,8 @@ export class RegisterStudentUseCase {
     const hashedPassword = await this.hashGenerator.hash(request.password)
 
     const student = Student.create({
-      ...request,
+      name: request.name,
+      email: request.email,
       password: hashedPassword,
     })
 
