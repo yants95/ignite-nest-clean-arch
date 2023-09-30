@@ -1,4 +1,10 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common'
+import {
+  BadRequestException,
+  Controller,
+  Get,
+  Query,
+  UseGuards,
+} from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 import { z } from 'zod'
@@ -25,9 +31,7 @@ export class FetchRecentQuestionsController {
   async handle(@Query('page', queryValidationPipe) page: PageQueryParamSchema) {
     const result = await this.usecase.execute({ page })
 
-    if (result.isLeft()) {
-      throw new Error()
-    }
+    if (result.isLeft()) throw new BadRequestException()
 
     const questions = result.value.questions
 
