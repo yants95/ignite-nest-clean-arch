@@ -12,8 +12,6 @@ export class InMemoryStudentsRepository implements StudentsRepository {
       return null
     }
 
-    console.log('student =>>', student)
-
     return student
   }
 

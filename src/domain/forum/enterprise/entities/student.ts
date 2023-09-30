@@ -9,15 +9,15 @@ export interface StudentProps {
 
 export class Student extends Entity<StudentProps> {
   get name(): string {
-    return this.name
+    return this.props.name
   }
 
   get email(): string {
-    return this.email
+    return this.props.email
   }
 
   get password(): string {
-    return this.password
+    return this.props.password
   }
 
   static create(props: StudentProps, id?: UniqueEntityID) {
