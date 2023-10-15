@@ -2,40 +2,42 @@ import {
   BadRequestException,
   Body,
   Controller,
+  HttpCode,
   Param,
-  Post,
+  Put,
 } from '@nestjs/common'
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 import { z } from 'zod'
-import { CreateAnswerQuestionUseCase } from '@/domain/forum/application/use-cases/answer-question'
+import { EditAnswerUseCase } from '@/domain/forum/application/use-cases/edit-answer'
 
-const answerQuestionBodySchema = z.object({
+const editAnswerBodySchema = z.object({
   content: z.string(),
 })
 
-const bodyValidationpPipe = new ZodValidationPipe(answerQuestionBodySchema)
+const bodyValidationpPipe = new ZodValidationPipe(editAnswerBodySchema)
 
-type AnswerQuestionBodySchema = z.infer<typeof answerQuestionBodySchema>
+type EditAnswerBodySchema = z.infer<typeof editAnswerBodySchema>
 
-@Controller('/questions/:questionId/answers')
-export class CreateAnswerQuestionController {
-  constructor(private readonly usecase: CreateAnswerQuestionUseCase) {}
+@Controller('/answers/:id')
+export class EditAnswerController {
+  constructor(private readonly usecase: EditAnswerUseCase) {}
 
-  @Post()
+  @Put()
+  @HttpCode(204)
   async handle(
-    @Body(bodyValidationpPipe) body: AnswerQuestionBodySchema,
+    @Body(bodyValidationpPipe) body: EditAnswerBodySchema,
     @CurrentUser() user: UserPayload,
-    @Param('questionId') questionId: string,
+    @Param('id') answerId: string,
   ) {
     const userId = user.sub
 
     const result = await this.usecase.execute({
       ...body,
-      questionId,
       authorId: userId,
       attachmentsIds: [],
+      answerId,
     })
 
     if (result.isLeft()) throw new BadRequestException()
