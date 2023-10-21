@@ -38,11 +38,11 @@ export class PrismaAnswerCommentsRepository
   }
 
   async create(AnswerComment: AnswerComment): Promise<void> {
-    const AnswerCommentToCreate =
+    const answerCommentToCreate =
       PrismaAnswerCommentMapper.toPersistent(AnswerComment)
 
     await this.prisma.comment.create({
-      data: AnswerCommentToCreate,
+      data: answerCommentToCreate,
     })
   }
 
