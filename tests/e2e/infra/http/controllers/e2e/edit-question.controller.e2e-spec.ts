@@ -1,4 +1,6 @@
+import { AttachmentFactory } from '#/unit/factories/make-attachment'
 import { QuestionFactory } from '#/unit/factories/make-question'
+import { QuestionAttachmentFactory } from '#/unit/factories/make-question-attachments'
 import { StudentFactory } from '#/unit/factories/make-student'
 import { AppModule } from '@/infra/app.module'
 import { DatabaseModule } from '@/infra/database/database.module'
@@ -11,17 +13,26 @@ describe('EditQuestionController (e2e)', () => {
   let app: INestApplication
   let studentFactory: StudentFactory
   let questionFactory: QuestionFactory
+  let attachmentFactory: AttachmentFactory
+  let questionAttachmentFactory: QuestionAttachmentFactory
   let jwt: JwtService
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [StudentFactory, QuestionFactory],
+      providers: [
+        StudentFactory,
+        QuestionFactory,
+        AttachmentFactory,
+        QuestionAttachmentFactory,
+      ],
     }).compile()
 
     app = moduleRef.createNestApplication()
     studentFactory = moduleRef.get(StudentFactory)
     questionFactory = moduleRef.get(QuestionFactory)
+    attachmentFactory = moduleRef.get(AttachmentFactory)
+    questionAttachmentFactory = moduleRef.get(QuestionAttachmentFactory)
     jwt = moduleRef.get(JwtService)
 
     await app.init()
@@ -36,6 +47,21 @@ describe('EditQuestionController (e2e)', () => {
       authorId: user.id,
     })
 
+    const attachment1 = await attachmentFactory.makePrismaAttachment()
+    const attachment2 = await attachmentFactory.makePrismaAttachment()
+
+    await questionAttachmentFactory.makePrismaQuestionAttachment({
+      attachmentId: attachment1.id,
+      questionId: question.id,
+    })
+
+    await questionAttachmentFactory.makePrismaQuestionAttachment({
+      attachmentId: attachment2.id,
+      questionId: question.id,
+    })
+
+    const attachment3 = await attachmentFactory.makePrismaAttachment()
+
     const questionId = question.id.toString()
 
     const response = await request(app.getHttpServer())
@@ -44,6 +70,7 @@ describe('EditQuestionController (e2e)', () => {
       .send({
         title: 'New title',
         content: 'New content',
+        attachments: [attachment1.id.toString(), attachment3.id.toString()],
       })
 
     expect(response.statusCode).toBe(204)

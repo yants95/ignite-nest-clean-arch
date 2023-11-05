@@ -1,4 +1,3 @@
-import { QuestionFactory } from '#/unit/factories/make-question'
 import { StudentFactory } from '#/unit/factories/make-student'
 import { AppModule } from '@/infra/app.module'
 import { DatabaseModule } from '@/infra/database/database.module'
@@ -15,7 +14,7 @@ describe('UploadAttachmentController (e2e)', () => {
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [StudentFactory, QuestionFactory],
+      providers: [StudentFactory],
     }).compile()
 
     app = moduleRef.createNestApplication()
@@ -25,7 +24,7 @@ describe('UploadAttachmentController (e2e)', () => {
     await app.init()
   })
 
-  test('POST /attachments/', async () => {
+  test('POST /attachments', async () => {
     const user = await studentFactory.makePrismaStudent()
 
     const accessToken = jwt.sign({ sub: user.id.toString() })

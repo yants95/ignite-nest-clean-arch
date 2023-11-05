@@ -15,6 +15,7 @@ import { EditQuestionUseCase } from '@/domain/forum/application/use-cases/edit-q
 const EditQuestionBodySchema = z.object({
   title: z.string(),
   content: z.string(),
+  attachments: z.array(z.string().uuid()),
 })
 
 const bodyValidationpPipe = new ZodValidationPipe(EditQuestionBodySchema)
@@ -37,7 +38,7 @@ export class EditQuestionController {
     const result = await this.usecase.execute({
       ...body,
       authorId: userId,
-      attachmentsIds: [],
+      attachmentsIds: body.attachments,
       questionId,
     })
 

@@ -37,7 +37,7 @@ import { FetchQuestionCommentsController } from '@/infra/http/controllers/fetch-
 import { FetchQuestionCommentsUseCase } from '@/domain/forum/application/use-cases/fetch-question-comments'
 import { FetchAnswerCommentsController } from '@/infra/http/controllers/fetch-answer-comments.controller'
 import { FetchAnswerCommentsUseCase } from '@/domain/forum/application/use-cases/fetch-answer-comments'
-import { UploadAndCreateAttachmentController } from '@/infra/http/controllers/upload-and-attachment.controller'
+import { UploadAndCreateAttachmentController } from '@/infra/http/controllers/upload-and-create-attachment.controller'
 import { UploadAndCreateAttachmentUseCase } from '@/domain/forum/application/use-cases/upload-and-create-attachment'
 import { StorageModule } from '@/infra/storage/storage.module'
 
