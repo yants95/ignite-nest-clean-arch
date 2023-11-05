@@ -8,6 +8,7 @@ import { CreateQuestionUseCase } from '@/domain/forum/application/use-cases/crea
 const createQuestionBodySchema = z.object({
   title: z.string(),
   content: z.string(),
+  attachments: z.array(z.string().uuid()),
 })
 
 const bodyValidationpPipe = new ZodValidationPipe(createQuestionBodySchema)
@@ -28,7 +29,7 @@ export class CreateQuestionController {
     const result = await this.usecase.execute({
       ...body,
       authorId: userId,
-      attachmentsIds: [],
+      attachmentsIds: body.attachments,
     })
 
     if (result.isLeft()) throw new BadRequestException()
