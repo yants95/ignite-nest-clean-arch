@@ -13,6 +13,7 @@ import { CreateAnswerQuestionUseCase } from '@/domain/forum/application/use-case
 
 const answerQuestionBodySchema = z.object({
   content: z.string(),
+  attachments: z.array(z.string().uuid()),
 })
 
 const bodyValidationpPipe = new ZodValidationPipe(answerQuestionBodySchema)
@@ -35,7 +36,7 @@ export class CreateAnswerQuestionController {
       ...body,
       questionId,
       authorId: userId,
-      attachmentsIds: [],
+      attachmentsIds: body.attachments,
     })
 
     if (result.isLeft()) throw new BadRequestException()

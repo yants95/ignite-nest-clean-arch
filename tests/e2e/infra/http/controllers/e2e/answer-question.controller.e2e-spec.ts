@@ -1,3 +1,4 @@
+import { AttachmentFactory } from '#/unit/factories/make-attachment'
 import { QuestionFactory } from '#/unit/factories/make-question'
 import { StudentFactory } from '#/unit/factories/make-student'
 import { AppModule } from '@/infra/app.module'
@@ -11,17 +12,19 @@ describe('AnswerQuestionController (e2e)', () => {
   let app: INestApplication
   let studentFactory: StudentFactory
   let questionFactory: QuestionFactory
+  let attachmentFactory: AttachmentFactory
   let jwt: JwtService
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [StudentFactory, QuestionFactory],
+      providers: [StudentFactory, QuestionFactory, AttachmentFactory],
     }).compile()
 
     app = moduleRef.createNestApplication()
     studentFactory = moduleRef.get(StudentFactory)
     questionFactory = moduleRef.get(QuestionFactory)
+    attachmentFactory = moduleRef.get(AttachmentFactory)
     jwt = moduleRef.get(JwtService)
 
     await app.init()
@@ -36,6 +39,9 @@ describe('AnswerQuestionController (e2e)', () => {
       authorId: user.id,
     })
 
+    const attachment1 = await attachmentFactory.makePrismaAttachment()
+    const attachment2 = await attachmentFactory.makePrismaAttachment()
+
     const questionId = question.id.toString()
 
     const response = await request(app.getHttpServer())
@@ -43,6 +49,7 @@ describe('AnswerQuestionController (e2e)', () => {
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
         content: 'New answer',
+        attachments: [attachment1.id.toString(), attachment2.id.toString()],
       })
 
     expect(response.statusCode).toBe(201)
