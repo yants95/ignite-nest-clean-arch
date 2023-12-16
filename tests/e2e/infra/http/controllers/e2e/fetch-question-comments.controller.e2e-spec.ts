@@ -62,6 +62,6 @@ describe('FetchQuestionCommentsController (e2e)', () => {
       .send()
 
     expect(response.statusCode).toBe(200)
-    expect(response.body.questionComments).toHaveLength(2)
+    expect(response.body.comments).toHaveLength(2)
   })
 })

@@ -39,7 +39,9 @@ describe('FetchAnswerCommentsController (e2e)', () => {
   })
 
   test('GET /answers/:id/comments', async () => {
-    const user = await studentFactory.makePrismaStudent()
+    const user = await studentFactory.makePrismaStudent({
+      name: 'John Doe',
+    })
 
     const accessToken = jwt.sign({ sub: user.id.toString() })
 
@@ -73,6 +75,6 @@ describe('FetchAnswerCommentsController (e2e)', () => {
       .send()
 
     expect(response.statusCode).toBe(200)
-    expect(response.body.answerComments).toHaveLength(2)
+    expect(response.body.comments).toHaveLength(2)
   })
 })
